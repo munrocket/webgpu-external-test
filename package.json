@@ -7,9 +7,13 @@
     ],
     "description": "Consuming external textures with WebGPU",
     "license": "MIT",
+    "scripts": {
+        "start": "servez"
+    },
     "dependencies": {
         "dat.gui": "^0.7.7",
         "gl-matrix": "github:toji/gl-matrix",
+        "servez": "^1.11.1",
         "stats.js": "^0.17.0",
         "three": "^0.129.0",
         "two.js": "^0.7.5"

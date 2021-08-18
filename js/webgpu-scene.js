@@ -11,23 +11,21 @@ const uniformBufferSize = 4 * 16; // 4x4 matrix
 const Cube = {
   vertexShader: {
     code: `
-    [[block]] struct Uniforms {
-      modelViewProjectionMatrix : mat4x4<f32>;
-    };
-    [[set(0), binding(0)]] var<uniform> uniforms : Uniforms;
-    
+    [[block]] struct Uniforms { modelViewProjectionMatrix : mat4x4<f32>; };
+    [[binding(0), group(0)]] var<uniform> uniforms : Uniforms;
+
     struct VertexInput {
       [[location(0)]] position : vec4<f32>;
       [[location(1)]] color : vec4<f32>;
       [[location(2)]] uv : vec2<f32>;
     };
-  
+
     struct VertexOutput {
       [[location(0)]] color : vec4<f32>;
       [[location(1)]] uv : vec2<f32>;
       [[builtin(position)]] position : vec4<f32>;
     };
-  
+
     [[stage(vertex)]]
     fn vertMain(input : VertexInput) -> VertexOutput {
       var output : VertexOutput;
@@ -41,8 +39,8 @@ const Cube = {
   },
   fragmentShader: {
     code: `
-    [[set(0), binding(1)]] var externalTexture : texture_2d<f32>;
-    [[set(0), binding(2)]] var externalSampler : sampler;
+    [[binding(1), group(0)]] var externalTexture : texture_2d<f32>;
+    [[binding(2), group(0)]] var externalSampler : sampler;
 
     struct FragmentInput {
       [[location(0)]] color : vec4<f32>;
@@ -138,7 +136,7 @@ export class WebGPUScene {
   async init() {
     this.adapter = await navigator.gpu.requestAdapter();
     this.device = await this.adapter.requestDevice();
-    
+
     this.vertexBuffer = this.device.createBuffer({
       size: Cube.vertexArray.byteLength,
       usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST
@@ -203,7 +201,7 @@ export class WebGPUScene {
     this.externalTexture = this.device.createTexture({
       format: swapFormat,
       size: {width: 1024, height: 1024},
-      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_DST | GPUTextureUsage.SAMPLED,
+      usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_DST | GPUTextureUsage.TEXTURE_BINDING,
     });
 
     this.externalSampler = this.device.createSampler({});
